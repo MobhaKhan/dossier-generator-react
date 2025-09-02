@@ -51,5 +51,6 @@ jobs:
         with:
           app-name: 'dossier-generator-app'
           slot-name: 'Production'
-          package: .
+          package: ./build
+
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_161E0F4F3D864CEEA45426285C47C4F4 }}

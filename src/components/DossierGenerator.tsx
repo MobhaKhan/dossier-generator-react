@@ -116,20 +116,7 @@ const DossierGenerator: React.FC = () => {
     }
   }, [processing.isProcessing]);
 
-  /**
-   * Clean markdown formatting for general use
-   */
-  const cleanMarkdownFormatting = (text: string): string => {
-    return text
-      .replace(/__(.*?)__/g, '$1')
-      .replace(/\*(.*?)\*/g, '$1')
-      .replace(/_(.*?)_/g, '$1')
-      .replace(/#{1,6}\s/g, '')
-      .replace(/`(.*?)`/g, '$1')
-      .replace(/\[(.*?)\]\(.*?\)/g, '$1')
-      .replace(/\n\n+/g, '\n\n')
-      .trim();
-  };
+
 
   /**
    * Clean markdown formatting specifically for RTF output

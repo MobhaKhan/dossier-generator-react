@@ -339,7 +339,7 @@ const DossierGenerator: React.FC = () => {
    */
   const createRTFDocument = (content: string): string => {
     let rtf = '{\\rtf1\\ansi\\deff0';
-    rtf += '{\\colortbl;\\red0\\green0\\blue0;\\red0\\green0\\blue255;\\red132\\green204\\blue22;}';
+    rtf += '{\\colortbl;\\red0\\green0\\blue0;\\red0\\green122\\blue204;\\red132\\green204\\blue22;}';
     rtf += '{\\fonttbl {\\f0 Calibri;}}';
     rtf += '\\f0\\fs22\\cf1';
     
@@ -502,7 +502,7 @@ const DossierGenerator: React.FC = () => {
         /* Main title - "Networking Briefs" */
         h1 {
             text-align: center;
-            color: #166534; /* Dark green */
+            color: #007ACC; /* VS Code blue */
             font-weight: 700;
             font-size: 28px;
             margin-bottom: 40px;
@@ -511,7 +511,7 @@ const DossierGenerator: React.FC = () => {
         
         /* Major section titles - "Executive Summary", "COMPANY INTELLIGENCE" */
         h2 {
-            color: #166534; /* Dark green */
+            color: #007ACC; /* VS Code blue */
             font-weight: 700;
             font-size: 20px;
             margin-top: 35px;
@@ -522,7 +522,7 @@ const DossierGenerator: React.FC = () => {
         
         /* Sub-section titles - "Organization Profile:" */
         h3 {
-            color: #166534; /* Dark green */
+            color: #007ACC; /* VS Code blue */
             font-weight: 700;
             font-size: 16px;
             margin-top: 25px;
@@ -531,16 +531,16 @@ const DossierGenerator: React.FC = () => {
         
         /* Regular section titles - "Networking Dossier: Stuart Thompson" */
         .regular-title {
-            color: #166534; /* Dark green */
+            color: #007ACC; /* VS Code blue */
             font-weight: 700;
             font-size: 16px;
             margin-top: 20px;
             margin-bottom: 15px;
         }
         
-        /* Attendee names - make them green */
+        /* Attendee names - make them blue */
         .attendee-name {
-            color: #166534; /* Dark green */
+            color: #007ACC; /* VS Code blue */
             font-weight: 700;
             font-size: 16px;
         }
@@ -573,7 +573,7 @@ const DossierGenerator: React.FC = () => {
         
         /* Company names and important info */
         .company-name {
-            color: #166534; /* Dark green */
+            color: #007ACC; /* VS Code blue */
             font-weight: 700;
             font-size: 15px;
             text-decoration: underline;
@@ -581,7 +581,7 @@ const DossierGenerator: React.FC = () => {
         
         /* Contact information */
         .contact-info {
-            color: #166534; /* Dark green */
+            color: #007ACC; /* VS Code blue */
             font-weight: 700;
             font-size: 14px;
             text-decoration: underline;
@@ -727,6 +727,12 @@ const DossierGenerator: React.FC = () => {
               </button>
               <button className="download-btn" onClick={downloadHTML}>
                 Download HTML (with images)
+              </button>
+              <button 
+                className="outreach-btn" 
+                onClick={() => window.open('https://prod-cc-darius-n8n.whitepebble-f2dfd303.canadacentral.azurecontainerapps.io/webhook/outreach', '_blank')}
+              >
+                Outreach Email
               </button>
               <button className="start-over-btn" onClick={startOver}>
                 Start Over

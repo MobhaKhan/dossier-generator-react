@@ -178,6 +178,27 @@
   box-shadow: 0 4px 12px rgba(132, 204, 22, 0.4);
 }
 
+/* Outreach email button */
+.outreach-btn {
+  background: linear-gradient(135deg, #007ACC 0%, #005A9E 100%);
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 122, 204, 0.3);
+  font-size: 16px;
+}
+
+.outreach-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 122, 204, 0.4);
+  background: linear-gradient(135deg, #005A9E 0%, #004080 100%);
+}
+
 /* Start over button */
 .start-over-btn {
   background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
@@ -311,7 +332,7 @@
 /* Main title styling - "Networking Briefs" */
 .response-content h1, 
 .response-content .main-title {
-  color: #166534; /* Dark green */
+  color: #007ACC; /* VS Code blue */
   font-weight: 700;
   font-size: 28px;
   text-align: center;
@@ -322,7 +343,7 @@
 /* Major section titles - "Executive Summary", "COMPANY INTELLIGENCE" */
 .response-content h2, 
 .response-content .major-title {
-  color: #166534; /* Dark green */
+  color: #007ACC; /* VS Code blue */
   font-weight: 700;
   font-size: 20px;
   margin-top: 35px;
@@ -334,7 +355,7 @@
 /* Sub-section titles - "Organization Profile:" */
 .response-content h3, 
 .response-content .section-title {
-  color: #166534; /* Dark green */
+  color: #007ACC; /* VS Code blue */
   font-weight: 700;
   font-size: 16px;
   margin-top: 25px;
@@ -343,16 +364,16 @@
 
 /* Regular section titles - "Networking Dossier: Stuart Thompson" */
 .response-content .regular-title {
-  color: #166534; /* Dark green */
+  color: #007ACC; /* VS Code blue */
   font-weight: 700;
   font-size: 16px;
   margin-top: 20px;
   margin-bottom: 15px;
 }
 
-/* Attendee names - make them green */
+/* Attendee names - make them blue */
 .response-content .attendee-name {
-  color: #166534; /* Dark green */
+  color: #007ACC; /* VS Code blue */
   font-weight: 700;
   font-size: 16px;
 }
@@ -396,7 +417,7 @@
 
 /* Company names and important info */
 .response-content .company-name {
-  color: #166534; /* Dark green */
+  color: #007ACC; /* VS Code blue */
   font-weight: 700;
   font-size: 15px;
   text-decoration: underline;
@@ -404,7 +425,7 @@
 
 /* Contact information */
 .response-content .contact-info {
-  color: #166534; /* Dark green */
+  color: #007ACC; /* VS Code blue */
   font-weight: 700;
   font-size: 14px;
   text-decoration: underline;

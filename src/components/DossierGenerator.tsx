@@ -29,6 +29,13 @@ const DossierGenerator: React.FC = () => {
     text: 'Your workflow has processed the data',
     content: ''
   });
+  const [outreachResults, setOutreachResults] = useState<ResultsState>({
+    show: false,
+    title: 'Outreach Emails Generated',
+    text: 'Your outreach emails have been generated',
+    content: ''
+  });
+  const [outreachResponseText, setOutreachResponseText] = useState<string>('');
   const [showButtonGroup, setShowButtonGroup] = useState(false);
   
   // Refs for DOM elements
@@ -452,6 +459,7 @@ const DossierGenerator: React.FC = () => {
   const startOver = () => {
     setCsvData('');
     setResponseText('');
+    setOutreachResponseText('');
     setError('');
     setProcessing({
       isProcessing: false,
@@ -463,12 +471,227 @@ const DossierGenerator: React.FC = () => {
       text: 'Your workflow has processed the data',
       content: ''
     });
+    setOutreachResults({
+      show: false,
+      title: 'Outreach Emails Generated',
+      text: 'Your outreach emails have been generated',
+      content: ''
+    });
     setShowButtonGroup(false);
     
     // Clear the file input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+  };
+
+  /**
+   * Download outreach emails as RTF file
+   */
+  const downloadOutreachRTF = () => {
+    if (!outreachResponseText) return;
+    
+    const timestamp = new Date().toISOString().split('T')[0];
+    const fileName = `Outreach_Emails_${timestamp}.rtf`;
+    
+    let downloadContent = outreachResponseText;
+    try {
+      const jsonResponse = JSON.parse(outreachResponseText);
+      
+      if (Array.isArray(jsonResponse)) {
+        downloadContent = jsonResponse.map((item: any) => {
+          if (item.output) {
+            return cleanMarkdownForRTF(item.output);
+          }
+          return cleanMarkdownForRTF(JSON.stringify(item));
+        }).join('\n\n' + '='.repeat(50) + '\n\n');
+      } else if (jsonResponse.output) {
+        downloadContent = cleanMarkdownForRTF(jsonResponse.output);
+      } else {
+        downloadContent = cleanMarkdownForRTF(JSON.stringify(jsonResponse));
+      }
+    } catch (e) {
+      downloadContent = cleanMarkdownForRTF(outreachResponseText);
+    }
+    
+    const rtfContent = createRTFDocument(downloadContent);
+    const blob = new Blob([rtfContent], { type: 'application/rtf; charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  /**
+   * Download outreach emails as HTML file with embedded styling
+   */
+  const downloadOutreachHTML = () => {
+    if (!outreachResponseText) return;
+    
+    const timestamp = new Date().toISOString().split('T')[0];
+    const fileName = `Outreach_Emails_${timestamp}.html`;
+    const htmlContent = outreachResults.content;
+    
+    // Create complete HTML document with embedded styles
+    const fullHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outreach Emails - ${timestamp}</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.7;
+            color: #374151;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: white;
+        }
+        
+        /* Main title - "Outreach Emails" */
+        h1 {
+            text-align: center;
+            color: #007ACC; /* VS Code blue */
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 40px;
+            margin-top: 0;
+        }
+        
+        /* Major section titles - "Executive Summary", "COMPANY INTELLIGENCE" */
+        h2 {
+            color: #007ACC; /* VS Code blue */
+            font-weight: 700;
+            font-size: 20px;
+            margin-top: 35px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Sub-section titles - "Organization Profile:" */
+        h3 {
+            color: #007ACC; /* VS Code blue */
+            font-weight: 700;
+            font-size: 16px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        
+        /* Regular section titles - "Networking Dossier: Stuart Thompson" */
+        .regular-title {
+            color: #007ACC; /* VS Code blue */
+            font-weight: 700;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        
+        /* Attendee names - make them blue */
+        .attendee-name {
+            color: #007ACC; /* VS Code blue */
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        /* Bold text */
+        strong, b {
+            color: #374151;
+            font-weight: 600;
+        }
+        
+        /* Bullet points and lists */
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin: 8px 0;
+            color: #374151;
+            line-height: 1.5;
+        }
+        
+        /* Separator lines */
+        hr, .separator {
+            border: none;
+            border-top: 2px solid #e5e7eb;
+            margin: 25px 0;
+            height: 1px;
+        }
+        
+        /* Company names and important info */
+        .company-name {
+            color: #007ACC; /* VS Code blue */
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: underline;
+        }
+        
+        /* Contact information */
+        .contact-info {
+            color: #007ACC; /* VS Code blue */
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+        
+        /* ICP indicator */
+        .icp-indicator {
+            color: #059669;
+            font-weight: 600;
+        }
+        
+        /* Content wrapper */
+        .content {
+            background: white;
+            padding: 20px;
+        }
+        
+        /* Dossier sections */
+        .dossier {
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+        
+        /* Profile photo styling */
+        .profile-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px 0;
+            border: 3px solid #22c55e;
+        }
+        
+        /* Highlight boxes */
+        .highlight {
+            background-color: #f0fdf4;
+            padding: 15px;
+            border-left: 4px solid #22c55e;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Outreach Emails</h1>
+    <div class="content">
+        ${htmlContent}
+    </div>
+</body>
+</html>`;
+    
+    const blob = new Blob([fullHtml], { type: 'text/html; charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   /**
@@ -731,29 +954,93 @@ const DossierGenerator: React.FC = () => {
               <button 
                 className="outreach-btn" 
                 onClick={async () => {
+                  if (!csvData) {
+                    alert('Please upload a CSV file first before generating outreach emails.');
+                    return;
+                  }
+                  
+                  setProcessing({
+                    isProcessing: true,
+                    processingText: 'Generating outreach emails...'
+                  });
+                  
                   try {
+                    const formData = new FormData();
+                    const csvBlob = new Blob([csvData], { type: 'text/csv' });
+                    formData.append('file', csvBlob, 'conference_data.csv');
+
                     const response = await fetch('https://prod-cc-darius-n8n.whitepebble-f2dfd303.canadacentral.azurecontainerapps.io/webhook/outreach', {
                       method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({})
+                      body: formData
                     });
+                    
+                    const responseData = await response.text();
+                    setOutreachResponseText(responseData);
+                    
                     if (response.ok) {
-                      const result = await response.text();
-                      console.log('Outreach email triggered:', result);
-                      alert('Outreach email has been triggered successfully!');
+                      let formattedResponse = responseData;
+                      try {
+                        const jsonResponse = JSON.parse(responseData);
+                        
+                        if (Array.isArray(jsonResponse)) {
+                          formattedResponse = jsonResponse.map((item: any) => {
+                            if (item.output) {
+                              return formatDossierText(item.output);
+                            }
+                            return formatDossierText(JSON.stringify(item));
+                          }).join('\n\n' + '='.repeat(50) + '\n\n');
+                        } else if (jsonResponse.output) {
+                          formattedResponse = formatDossierText(jsonResponse.output);
+                        } else {
+                          formattedResponse = formatDossierText(JSON.stringify(jsonResponse));
+                        }
+                      } catch (e) {
+                        formattedResponse = formatDossierText(responseData);
+                      }
+
+                      setOutreachResults({
+                        show: true,
+                        title: 'Outreach Emails Generated',
+                        text: 'Your outreach emails have been generated successfully.',
+                        content: formattedResponse
+                      });
                     } else {
-                      console.error('Error triggering outreach email:', response.status, response.statusText);
-                      alert('Error triggering outreach email. Please try again.');
+                      setError(`Error ${response.status}: ${responseData}`);
                     }
                   } catch (error) {
-                    console.error('Error triggering outreach email:', error);
-                    alert('Error triggering outreach email. Please try again.');
+                    console.error('Error generating outreach emails:', error);
+                    setError(`Error generating outreach emails: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                  } finally {
+                    setProcessing({ isProcessing: false, processingText: 'Processing...' });
                   }
                 }}
               >
                 Outreach Email
+              </button>
+              <button className="start-over-btn" onClick={startOver}>
+                Start Over
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Outreach Results Section */}
+        {outreachResults.show && (
+          <div className="results">
+            <div className="success-icon">📧</div>
+            <h2>{outreachResults.title}</h2>
+            <div className="results-text">{outreachResults.text}</div>
+            <div 
+              className="response-content"
+              dangerouslySetInnerHTML={{ __html: outreachResults.content }}
+            />
+            {/* Outreach Download Buttons */}
+            <div className="download-section">
+              <button className="download-btn" onClick={downloadOutreachRTF}>
+                Download Outreach RTF
+              </button>
+              <button className="download-btn" onClick={downloadOutreachHTML}>
+                Download Outreach HTML
               </button>
               <button className="start-over-btn" onClick={startOver}>
                 Start Over

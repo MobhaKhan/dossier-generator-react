@@ -730,7 +730,28 @@ const DossierGenerator: React.FC = () => {
               </button>
               <button 
                 className="outreach-btn" 
-                onClick={() => window.open('https://prod-cc-darius-n8n.whitepebble-f2dfd303.canadacentral.azurecontainerapps.io/webhook/outreach', '_blank')}
+                onClick={async () => {
+                  try {
+                    const response = await fetch('https://prod-cc-darius-n8n.whitepebble-f2dfd303.canadacentral.azurecontainerapps.io/webhook/outreach', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({})
+                    });
+                    if (response.ok) {
+                      const result = await response.text();
+                      console.log('Outreach email triggered:', result);
+                      alert('Outreach email has been triggered successfully!');
+                    } else {
+                      console.error('Error triggering outreach email:', response.status, response.statusText);
+                      alert('Error triggering outreach email. Please try again.');
+                    }
+                  } catch (error) {
+                    console.error('Error triggering outreach email:', error);
+                    alert('Error triggering outreach email. Please try again.');
+                  }
+                }}
               >
                 Outreach Email
               </button>

@@ -180,7 +180,7 @@
 
 /* Outreach email button */
 .outreach-btn {
-  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: white;
   padding: 15px 30px;
   border: none;
@@ -188,14 +188,21 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
   font-size: 16px;
 }
 
 .outreach-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+}
+
+.outreach-btn:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Start over button */
@@ -290,10 +297,25 @@
 .download-section {
   margin-top: 20px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  gap: 15px;
+}
+
+.download-buttons-row {
+  display: flex;
   gap: 10px;
+  justify-content: center;
+}
+
+.outreach-button-row {
+  display: flex;
+  justify-content: center;
+}
+
+.start-over-row {
+  display: flex;
+  justify-content: center;
 }
 
 /* ==========================================================================

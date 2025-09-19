@@ -945,15 +945,19 @@ const DossierGenerator: React.FC = () => {
             />
             {/* Download and Action Buttons */}
             <div className="download-section">
-              <button className="download-btn" onClick={downloadRTF}>
-                Download RTF
-              </button>
-              <button className="download-btn" onClick={downloadHTML}>
-                Download HTML (with images)
-              </button>
-              <button 
-                className="outreach-btn" 
-                onClick={async () => {
+              <div className="download-buttons-row">
+                <button className="download-btn" onClick={downloadRTF}>
+                  Download RTF
+                </button>
+                <button className="download-btn" onClick={downloadHTML}>
+                  Download HTML (with images)
+                </button>
+              </div>
+              <div className="outreach-button-row">
+                <button 
+                  className="outreach-btn" 
+                  disabled={processing.isProcessing}
+                  onClick={async () => {
                   if (!csvData) {
                     alert('Please upload a CSV file first before generating outreach emails.');
                     return;
@@ -1015,11 +1019,14 @@ const DossierGenerator: React.FC = () => {
                   }
                 }}
               >
-                Outreach Email
+                {processing.isProcessing ? 'Connecting to n8n...' : 'Outreach Email'}
               </button>
-              <button className="start-over-btn" onClick={startOver}>
-                Start Over
-              </button>
+              </div>
+              <div className="start-over-row">
+                <button className="start-over-btn" onClick={startOver}>
+                  Start Over
+                </button>
+              </div>
             </div>
           </div>
         )}

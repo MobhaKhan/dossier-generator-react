@@ -39,6 +39,7 @@ const DossierGenerator: React.FC = () => {
   const [showButtonGroup, setShowButtonGroup] = useState(false);
   const [locationType, setLocationType] = useState<'city' | 'conference'>('city');
   const [locationInput, setLocationInput] = useState<string>('');
+  const [showLocationModal, setShowLocationModal] = useState<boolean>(false);
   
   // Refs for DOM elements
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -482,6 +483,7 @@ const DossierGenerator: React.FC = () => {
     setShowButtonGroup(false);
     setLocationType('city');
     setLocationInput('');
+    setShowLocationModal(false);
     
     // Clear the file input
     if (fileInputRef.current) {
@@ -917,44 +919,6 @@ const DossierGenerator: React.FC = () => {
           </div>
         )}
 
-        {/* Location Input Section */}
-        {showButtonGroup && (
-          <div className="location-input-section">
-            <h3>Location Information</h3>
-            <div className="location-toggle">
-              <label className="toggle-option">
-                <input 
-                  type="radio" 
-                  name="locationType" 
-                  value="city"
-                  checked={locationType === 'city'}
-                  onChange={(e) => setLocationType(e.target.value as 'city' | 'conference')}
-                />
-                <span>I will be in (city)</span>
-              </label>
-              <label className="toggle-option">
-                <input 
-                  type="radio" 
-                  name="locationType" 
-                  value="conference"
-                  checked={locationType === 'conference'}
-                  onChange={(e) => setLocationType(e.target.value as 'city' | 'conference')}
-                />
-                <span>I will be at (conference)</span>
-              </label>
-            </div>
-            <div className="location-input">
-              <input
-                type="text"
-                placeholder={locationType === 'city' ? 'Enter city name' : 'Enter conference name'}
-                value={locationInput}
-                onChange={(e) => setLocationInput(e.target.value)}
-                className="location-text-input"
-              />
-            </div>
-          </div>
-        )}
-
         {/* Generate Button */}
         {showButtonGroup && (
           <div className="button-group">
@@ -999,17 +963,114 @@ const DossierGenerator: React.FC = () => {
                 <button 
                   className="outreach-btn" 
                   disabled={processing.isProcessing}
-                  onClick={async () => {
-                  if (!csvData) {
-                    alert('Please upload a CSV file first before generating outreach emails.');
-                    return;
-                  }
-                  
+                  onClick={() => {
+                    if (!csvData) {
+                      alert('Please upload a CSV file first before generating outreach emails.');
+                      return;
+                    }
+                    setShowLocationModal(true);
+                  }}
+                >
+                  Outreach Email
+                </button>
+              </div>
+              <div className="start-over-row">
+                <button className="start-over-btn" onClick={startOver}>
+                  Start Over
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Outreach Results Section */}
+        {outreachResults.show && (
+          <div className="results">
+            <div className="success-icon">📧</div>
+            <h2>{outreachResults.title}</h2>
+            <div className="results-text">{outreachResults.text}</div>
+            <div 
+              className="response-content"
+              dangerouslySetInnerHTML={{ __html: outreachResults.content }}
+            />
+            {/* Outreach Download Buttons */}
+            <div className="download-section">
+              <button className="download-btn" onClick={downloadOutreachRTF}>
+                Download Outreach RTF
+              </button>
+              <button className="download-btn" onClick={downloadOutreachHTML}>
+                Download Outreach HTML
+              </button>
+              <button className="start-over-btn" onClick={startOver}>
+                Start Over
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Location Modal */}
+      {showLocationModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Location Information</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowLocationModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="location-toggle">
+                <label className="toggle-option">
+                  <input 
+                    type="radio" 
+                    name="locationType" 
+                    value="city"
+                    checked={locationType === 'city'}
+                    onChange={(e) => setLocationType(e.target.value as 'city' | 'conference')}
+                  />
+                  <span>I will be in (city)</span>
+                </label>
+                <label className="toggle-option">
+                  <input 
+                    type="radio" 
+                    name="locationType" 
+                    value="conference"
+                    checked={locationType === 'conference'}
+                    onChange={(e) => setLocationType(e.target.value as 'city' | 'conference')}
+                  />
+                  <span>I will be at (conference)</span>
+                </label>
+              </div>
+              <div className="location-input">
+                <input
+                  type="text"
+                  placeholder={locationType === 'city' ? 'Enter city name' : 'Enter conference name'}
+                  value={locationInput}
+                  onChange={(e) => setLocationInput(e.target.value)}
+                  className="location-text-input"
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button 
+                className="modal-cancel-btn"
+                onClick={() => setShowLocationModal(false)}
+              >
+                Cancel
+              </button>
+              <button 
+                className="modal-submit-btn"
+                onClick={async () => {
                   if (!locationInput.trim()) {
-                    alert(`Please enter the ${locationType === 'city' ? 'city' : 'conference'} name before generating outreach emails.`);
+                    alert(`Please enter the ${locationType === 'city' ? 'city' : 'conference'} name.`);
                     return;
                   }
                   
+                  setShowLocationModal(false);
                   setProcessing({
                     isProcessing: true,
                     processingText: 'Generating outreach emails...'
@@ -1068,43 +1129,12 @@ const DossierGenerator: React.FC = () => {
                   }
                 }}
               >
-                {processing.isProcessing ? 'Connecting to n8n...' : 'Outreach Email'}
-              </button>
-              </div>
-              <div className="start-over-row">
-                <button className="start-over-btn" onClick={startOver}>
-                  Start Over
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Outreach Results Section */}
-        {outreachResults.show && (
-          <div className="results">
-            <div className="success-icon">📧</div>
-            <h2>{outreachResults.title}</h2>
-            <div className="results-text">{outreachResults.text}</div>
-            <div 
-              className="response-content"
-              dangerouslySetInnerHTML={{ __html: outreachResults.content }}
-            />
-            {/* Outreach Download Buttons */}
-            <div className="download-section">
-              <button className="download-btn" onClick={downloadOutreachRTF}>
-                Download Outreach RTF
-              </button>
-              <button className="download-btn" onClick={downloadOutreachHTML}>
-                Download Outreach HTML
-              </button>
-              <button className="start-over-btn" onClick={startOver}>
-                Start Over
+                Generate Outreach Emails
               </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

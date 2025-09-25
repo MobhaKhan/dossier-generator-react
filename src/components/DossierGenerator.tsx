@@ -37,6 +37,8 @@ const DossierGenerator: React.FC = () => {
   });
   const [outreachResponseText, setOutreachResponseText] = useState<string>('');
   const [showButtonGroup, setShowButtonGroup] = useState(false);
+  const [locationType, setLocationType] = useState<'city' | 'conference'>('city');
+  const [locationInput, setLocationInput] = useState<string>('');
   
   // Refs for DOM elements
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -478,6 +480,8 @@ const DossierGenerator: React.FC = () => {
       content: ''
     });
     setShowButtonGroup(false);
+    setLocationType('city');
+    setLocationInput('');
     
     // Clear the file input
     if (fileInputRef.current) {
@@ -913,6 +917,44 @@ const DossierGenerator: React.FC = () => {
           </div>
         )}
 
+        {/* Location Input Section */}
+        {showButtonGroup && (
+          <div className="location-input-section">
+            <h3>Location Information</h3>
+            <div className="location-toggle">
+              <label className="toggle-option">
+                <input 
+                  type="radio" 
+                  name="locationType" 
+                  value="city"
+                  checked={locationType === 'city'}
+                  onChange={(e) => setLocationType(e.target.value as 'city' | 'conference')}
+                />
+                <span>I will be in (city)</span>
+              </label>
+              <label className="toggle-option">
+                <input 
+                  type="radio" 
+                  name="locationType" 
+                  value="conference"
+                  checked={locationType === 'conference'}
+                  onChange={(e) => setLocationType(e.target.value as 'city' | 'conference')}
+                />
+                <span>I will be at (conference)</span>
+              </label>
+            </div>
+            <div className="location-input">
+              <input
+                type="text"
+                placeholder={locationType === 'city' ? 'Enter city name' : 'Enter conference name'}
+                value={locationInput}
+                onChange={(e) => setLocationInput(e.target.value)}
+                className="location-text-input"
+              />
+            </div>
+          </div>
+        )}
+
         {/* Generate Button */}
         {showButtonGroup && (
           <div className="button-group">
@@ -963,6 +1005,11 @@ const DossierGenerator: React.FC = () => {
                     return;
                   }
                   
+                  if (!locationInput.trim()) {
+                    alert(`Please enter the ${locationType === 'city' ? 'city' : 'conference'} name before generating outreach emails.`);
+                    return;
+                  }
+                  
                   setProcessing({
                     isProcessing: true,
                     processingText: 'Generating outreach emails...'
@@ -972,6 +1019,8 @@ const DossierGenerator: React.FC = () => {
                     const formData = new FormData();
                     const csvBlob = new Blob([csvData], { type: 'text/csv' });
                     formData.append('file', csvBlob, 'conference_data.csv');
+                    formData.append('locationType', locationType);
+                    formData.append('locationInput', locationInput);
 
                     const response = await fetch('https://prod-cc-darius-n8n.whitepebble-f2dfd303.canadacentral.azurecontainerapps.io/webhook/outreach', {
                       method: 'POST',
